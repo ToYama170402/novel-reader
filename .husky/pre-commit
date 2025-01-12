@@ -1,4 +1,4 @@
-if git diff --cached --name-only --diff-filter=ACMR | sed 's| |\\ |g' | grep -en '\.(js|jsx|ts|tsx)?$'; then
-  pnpm exec prettier --write $(git diff --cached --name-only --diff-filter=ACMR | sed 's| |\\ |g' | grep -e '\.(js|jsx|ts|tsx)?$' )
+if git diff --cached --name-only --diff-filter=ACMR | sed 's| |\\ |g' | grep -e '\.\(js\|jsx\|json\|ts\|tsx\)$'; then
+  pnpm exec prettier --write $(git diff --cached --name-only --diff-filter=ACMR | sed 's| |\\ |g' | grep -e '\.\(js\|jsx\|json\|ts\|tsx\)$')
 fi
-pnpm exec eslint $(git diff --cached --name-only --diff-filter=ACMR | sed 's| |\\ |g' | grep -e '\.(js|jsx|ts|tsx)?$')
+pnpm exec eslint $(git diff --cached --name-only --diff-filter=ACMR | sed 's| |\\ |g' | grep -e '\.\(js\|jsx\|json\|ts\|tsx\)$')
