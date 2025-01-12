@@ -5,7 +5,7 @@
     "dockerfile": "Dockerfile"
   },
   "remoteUser": "node",
-  "onCreateCommand": "pnpm  install",
+  "onCreateCommand": "pnpm install",
   "customizations": {
     "vscode": {
       "extensions": [
