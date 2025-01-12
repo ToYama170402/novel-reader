@@ -1,0 +1,21 @@
+// See https://containers.dev/implementors/json_reference/ for configuration reference
+{
+  "name": "novel-reader",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "remoteUser": "node",
+  "features": {
+    "onCreateCommand": "pnpm  install"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint", // ESLint
+        "esbenp.prettier-vscode", // Prettier
+        "christian-kohler.npm-intellisense", // NPM Intellisense
+        "YoavBls.pretty-ts-errors" // Pretty TS Errors
+      ]
+    }
+  }
+}
