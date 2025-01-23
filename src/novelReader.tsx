@@ -12,9 +12,11 @@ type ComponentPropsWithClassName<
 export const Root: React.FC<ComponentPropsWithClassName<"div">> = (props) => {
   const viewer = useRef<HTMLDivElement>(null);
   return (
-    <readerContext.Provider value={viewer}>
-      {props.children}
-    </readerContext.Provider>
+    <div {...props}>
+      <readerContext.Provider value={viewer}>
+        {props.children}
+      </readerContext.Provider>
+    </div>
   );
 };
 
