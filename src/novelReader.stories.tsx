@@ -23,7 +23,7 @@ const Template = (args: { text: string }) => {
         backgroundColor: "#f0f0f0",
       }}
     >
-      <NovelReader.PrevButton
+      <NovelReader.RightButton
         style={{
           position: "absolute",
           opacity: "0",
@@ -37,8 +37,8 @@ const Template = (args: { text: string }) => {
         }}
       >
         前ページ
-      </NovelReader.PrevButton>
-      <NovelReader.NextButton
+      </NovelReader.RightButton>
+      <NovelReader.LeftButton
         style={{
           position: "absolute",
           opacity: "0",
@@ -52,7 +52,7 @@ const Template = (args: { text: string }) => {
         }}
       >
         次ページ
-      </NovelReader.NextButton>
+      </NovelReader.LeftButton>
       <NovelReader.Viewer
         style={{
           maxWidth: `${17 * 1.5}em`,

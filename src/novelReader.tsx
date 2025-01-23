@@ -1,4 +1,4 @@
-import React, { JSX, RefObject, useRef, useEffect } from "react";
+import React, { JSX, RefObject, useRef, useEffect, useState } from "react";
 
 const readerContext =
   React.createContext<RefObject<HTMLDivElement | null> | null>(null);
@@ -22,34 +22,57 @@ export const Root: React.FC<ComponentPropsWithClassName<"div">> = (props) => {
 
 export const Viewer: React.FC<ComponentPropsWithClassName<"div">> = (props) => {
   const viewer = React.useContext(readerContext);
+  const [viewerHeight, setViewerHeight] = useState(0);
+  const [viewerWidth, setViewerWidth] = useState(0);
+  useEffect(() => {
+    setViewerHeight(viewer!.current?.clientHeight || 0);
+    setViewerWidth(viewer!.current?.clientWidth || 0);
+  }, []);
   return (
-    <div {...props} ref={viewer}>
+    <div
+      {...props}
+      style={{
+        ...props.style,
+        columnWidth: `${props.style?.writingMode?.match(/vertical/) ? viewerHeight : viewerWidth}px`,
+        columnGap: 0,
+        columnRule: "none",
+        columnCount: "auto",
+        columnFill: "auto",
+        columnSpan: "none",
+      }}
+      ref={viewer}
+    >
       {props.children}
     </div>
   );
 };
 
-export const NextButton: React.FC<ComponentPropsWithClassName<"button">> = (
+export const LeftButton: React.FC<ComponentPropsWithClassName<"button">> = (
   props
 ) => {
   const viewer = React.useContext(readerContext);
 
   const handleClick = () => {
     const viewerWidth = viewer!.current?.clientWidth;
-    if (viewerWidth) {
-      viewer!.current!.scrollBy(-viewerWidth, 0);
+    const viewerHeight = viewer!.current?.clientHeight;
+    const isVertical = !!getComputedStyle(
+      viewer!.current as Element
+    ).writingMode.match(/vertical/);
+    if (isVertical) {
+      viewer!.current!.scrollBy(0, viewerHeight!);
+    } else {
+      viewer!.current!.scrollBy(-viewerWidth!, 0);
     }
   };
 
   useEffect(() => {
-    const writingDirection = viewer!.current?.style.writingMode.replace(
-      /.*-(rl|lr|tb)/g,
-      "$1"
-    );
+    const isR2L = !!getComputedStyle(
+      viewer!.current as Element
+    ).writingMode.match(/rl/);
     document.addEventListener("keydown", (e) => {
       if (
-        (writingDirection === "lr" && e.key === "ArrowRight") ||
-        (writingDirection === "rl" && e.key === "ArrowLeft")
+        (!isR2L && e.key === "ArrowRight") ||
+        (isR2L && e.key === "ArrowLeft")
       ) {
         handleClick();
       }
@@ -63,27 +86,32 @@ export const NextButton: React.FC<ComponentPropsWithClassName<"button">> = (
   );
 };
 
-export const PrevButton: React.FC<ComponentPropsWithClassName<"button">> = (
+export const RightButton: React.FC<ComponentPropsWithClassName<"button">> = (
   props
 ) => {
   const viewer = React.useContext(readerContext);
 
   const handleClick = () => {
     const viewerWidth = viewer!.current?.clientWidth;
-    if (viewerWidth) {
-      viewer!.current!.scrollBy(viewerWidth, 0);
+    const viewerHeight = viewer!.current?.clientHeight;
+    const isVertical = !!getComputedStyle(
+      viewer!.current as Element
+    ).writingMode.match(/vertical/);
+    if (isVertical) {
+      viewer!.current!.scrollBy(0, -viewerHeight!);
+    } else {
+      viewer!.current!.scrollBy(viewerWidth!, 0);
     }
   };
 
   useEffect(() => {
-    const writingDirection = viewer!.current?.style.writingMode.replace(
-      /.*-(rl|lr|tb)/g,
-      "$1"
-    );
+    const isR2L = !!getComputedStyle(
+      viewer!.current as Element
+    ).writingMode.match(/rl/);
     document.addEventListener("keydown", (e) => {
       if (
-        (writingDirection === "lr" && e.key === "ArrowLeft") ||
-        (writingDirection === "rl" && e.key === "ArrowRight")
+        (!isR2L && e.key === "ArrowLeft") ||
+        (isR2L && e.key === "ArrowRight")
       ) {
         handleClick();
       }
