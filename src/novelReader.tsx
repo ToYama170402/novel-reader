@@ -1,4 +1,4 @@
-import React, { JSX, RefObject, useRef } from "react";
+import React, { JSX, RefObject, useRef, useEffect } from "react";
 
 const readerContext =
   React.createContext<RefObject<HTMLDivElement | null> | null>(null);
@@ -33,8 +33,31 @@ export const NextButton: React.FC<ComponentPropsWithClassName<"button">> = (
   props
 ) => {
   const viewer = React.useContext(readerContext);
+
+  const handleClick = () => {
+    const viewerWidth = viewer!.current?.clientWidth;
+    if (viewerWidth) {
+      viewer!.current!.scrollBy(-viewerWidth, 0);
+    }
+  };
+
+  useEffect(() => {
+    const writingDirection = viewer!.current?.style.writingMode.replace(
+      /.*-(rl|lr|tb)/g,
+      "$1"
+    );
+    document.addEventListener("keydown", (e) => {
+      if (
+        (writingDirection === "lr" && e.key === "ArrowRight") ||
+        (writingDirection === "rl" && e.key === "ArrowLeft")
+      ) {
+        handleClick();
+      }
+    });
+  }, []);
+
   return (
-    <button {...props} onClick={() => console.log(viewer)}>
+    <button {...props} onClick={handleClick}>
       {props.children}
     </button>
   );
@@ -44,8 +67,31 @@ export const PrevButton: React.FC<ComponentPropsWithClassName<"button">> = (
   props
 ) => {
   const viewer = React.useContext(readerContext);
+
+  const handleClick = () => {
+    const viewerWidth = viewer!.current?.clientWidth;
+    if (viewerWidth) {
+      viewer!.current!.scrollBy(viewerWidth, 0);
+    }
+  };
+
+  useEffect(() => {
+    const writingDirection = viewer!.current?.style.writingMode.replace(
+      /.*-(rl|lr|tb)/g,
+      "$1"
+    );
+    document.addEventListener("keydown", (e) => {
+      if (
+        (writingDirection === "lr" && e.key === "ArrowLeft") ||
+        (writingDirection === "rl" && e.key === "ArrowRight")
+      ) {
+        handleClick();
+      }
+    });
+  }, []);
+
   return (
-    <button {...props} onClick={() => console.log(viewer)}>
+    <button {...props} onClick={handleClick}>
       {props.children}
     </button>
   );
